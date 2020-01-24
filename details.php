@@ -1,20 +1,16 @@
 <?php
-    include 'load.php';
-    
-    if(isset($_GET['filter'])){
-        $args = array(
-            'tbl' => 'tbl_movies',
-            'tbl2' => 'tbl_genre',
-            'tbl3' => 'tbl_mov_genre',
-            'col' => 'movies_id',
-            'col2' => 'genre_id',
-            'col3' => 'genre_name',
-            'filter' => $_GET['filter']
-        );
-        $getMovies = getMoviesByFilter($args);
-    } else {
+    ini_set('display_errors', 1);
+
+    require_once 'config/database.php';
+    require_once 'admin/scripts/read.php';
+
+    if(isset($_GET['id'])){
         $movie_table = 'tbl_movies';
-        $getMovies = getAll($movie_table);
+        $id = $_GET['id'];
+        $col = 'movies_id';
+
+        // $getMovies = getSingleMovie($movie_table, $col, $id);
+        $getMovie = getSingleMovie($movie_table, $col, $id);
     }
 ?>
 
@@ -28,13 +24,14 @@
 </head>
 <body>
     <?php include 'templates/header.php'; ?>
-    <?php while($row = $getMovies->fetch(PDO::FETCH_ASSOC)): ?>
+    <?php while($row = $getMovie->fetch(PDO::FETCH_ASSOC)): ?>
     <div class="movie-item">
         <img src="images/<?php echo $row['movies_cover']; ?>" alt="<?php echo $row['movies_title']; ?>">
         <h2><?php echo $row['movies_title']; ?></h2>
         <h4><?php echo $row['movies_year']; ?></h4>
-        <a href="details.php?id=<?php echo $row['movies_id']; ?>">read more</a>
+        <p><?php echo $row['movies_storyline']; ?></p>
     </div>
+    <a href="index.php"> GO back ...</a>
     <?php endwhile; ?>
     <?php include 'templates/footer.php'; ?>
 </body>
