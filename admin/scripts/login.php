@@ -27,6 +27,8 @@ function login($username, $password, $ip){
         while($founduser = $pass_set->fetch(PDO::FETCH_ASSOC)){
             $id = $founduser['user_id'];
 
+            $_SESSION['user_id'] = $id;
+            $_SESSION['user_name'] = $founduser['user_fname'];
             // Update the user table and set user_ip column to be $ip.
             $ip_update = 'UPDATE tbl_user SET user_ip = :ip WHERE user_id = :userid';
             $ip_set = $pdo->prepare($ip_update);
@@ -50,6 +52,16 @@ function login($username, $password, $ip){
     // Check if match
 }
 
+function confirm_logged_in(){
+    if(!isset($_SESSION['user_id'])){
+        redirect_to('admin_login.php');
+    }
+}
+
+function logout(){
+    session_destroy();
+    redirect_to('admin_login.php');
+}
 // testing keys: 
 //  admin " OR "1"="1
 //  123" OR "1"1="1
